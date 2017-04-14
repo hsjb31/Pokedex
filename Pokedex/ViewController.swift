@@ -28,6 +28,7 @@ class ViewController: UIViewController , UICollectionViewDelegate , UICollection
         collection.dataSource = self
         collection.delegate = self
         searchBar.delegate = self
+        searchBar.returnKeyType = UIReturnKeyType.done
         parsePokemonCSV()
     
     
@@ -85,6 +86,20 @@ class ViewController: UIViewController , UICollectionViewDelegate , UICollection
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        var poke : Pokemon!
+        
+        if inSearchMode {
+            
+            poke = filteredPokemon[indexPath.row]
+            
+        }
+        else{
+            poke = pokemon[indexPath.row]
+        }
+        
+        
+        performSegue(withIdentifier: "PokemonDetailVC", sender: poke )
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -119,6 +134,7 @@ class ViewController: UIViewController , UICollectionViewDelegate , UICollection
             
         inSearchMode = false
         collection.reloadData()
+        view.endEditing(true)
         }
         else{
             inSearchMode = true
@@ -132,6 +148,28 @@ class ViewController: UIViewController , UICollectionViewDelegate , UICollection
         
         
         
+        
     }
-}
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        view.endEditing(true)
 
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "PokemonDetailVC"{
+            
+        if let detailsVC = segue.destination as? PokemonDetailVC{
+            
+            if let poke = sender as? Pokemon{
+                detailsVC.pokemon = poke
+            }
+            
+    }
+    
+    
+}
+}
+}
